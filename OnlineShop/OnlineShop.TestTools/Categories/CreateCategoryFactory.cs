@@ -5,7 +5,7 @@ namespace OnlineShop.TestTools.Categories
 {
     public static class CreateCategoryFactory
     {
-        public static Category CreateCategoryDto(string name="dummy")
+        public static Category CreateCategoryDto(string name = "dummy")
         {
             return new Category
             {
@@ -13,11 +13,14 @@ namespace OnlineShop.TestTools.Categories
             };
         }
 
-        public static AddCategoryDto CreateAddCategoryDto(string name="dummy")
+        public static AddCategoryDto CreateAddCategoryDto(
+            int? parentId = null,
+            string name = "dummy")
         {
             return new AddCategoryDto
             {
                 Name = name,
+                ParentId = parentId
             };
         }
     }

@@ -47,9 +47,10 @@ public class AddCategories : EFDataContextDatabaseFixture
     [Then("دسته بندی با عنوان ‘برقی’ در فهرست دسته بندی کالا باید وجود داشته باشد")]
     private async Task Then()
     {
-        var expected = await _context.Categories
-            .FirstOrDefaultAsync();
-        expected.Name.Should().Be(_dto.Name);
+        var expected = await _context.ProductCategories
+            .ToListAsync();
+        expected!.First().Name.Should().Be(_dto.Name);
+        expected.First().ParentId.Should().Be(null);
     }
 
     [Fact]

@@ -6,19 +6,19 @@ namespace OnlineShop.RestApi.Controllers.Categories;
 
 [ApiController]
 [Route("api/categories")]
-public class CategoryController: ControllerBase
+public class CategoryController : ControllerBase
 {
     private readonly CategoryService _service;
 
     public CategoryController(CategoryService service)
     {
-        service = _service;
+        _service = service;
     }
 
     [HttpPost]
-    public async Task Add(AddCategoryDto dto)
+    public async Task<int> Add(AddCategoryDto dto)
     {
-        await _service.Add(dto);
+        return await _service.Add(dto);
     }
-    
+
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Entities.Category;
 using OnlineShop.Services.CategoryServices.Contracts;
-using System.Linq;
 
 namespace OnlineShop.Persistence.EF.Categories
 {
@@ -10,7 +9,7 @@ namespace OnlineShop.Persistence.EF.Categories
         private readonly DbSet<Category> _categories;
         public EFCategoryRepository(EFDataContext context)
         {
-            _categories = context.Categories;
+            _categories = context.ProductCategories;
         }
         public void Add(Category category)
         {

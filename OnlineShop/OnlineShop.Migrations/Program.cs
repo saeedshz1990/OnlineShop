@@ -5,26 +5,27 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OnlineShop.Migrations;
 
-internal static class Runner
+internal class Program
 {
     static void Main(string[] args)
     {
         var options = GetSettings(args, Directory.GetCurrentDirectory());
+
         var connectionString = options.ConnectionString;
+
         CreateDatabase(connectionString);
+
         var runner = CreateRunner(connectionString, options);
 
-        //runner.MigrateDown();
         runner.MigrateUp();
     }
 
     private static void CreateDatabase(string connectionString)
     {
         var databaseName = GetDatabaseName(connectionString);
-        string masterConnectionString = ChangeDatabaseName(
-            connectionString, "master");
-        var commandScript = $"if db_id(N'{databaseName}')" +
-            $" is null create database [{databaseName}]";
+        string masterConnectionString = ChangeDatabaseName(connectionString, "master");
+        var commandScript = $"if db_id(N'{databaseName}') is null create database [{databaseName}]";
+
 
         using var connection = new SqlConnection(masterConnectionString);
         using var command = new SqlCommand(commandScript, connection);
@@ -33,9 +34,7 @@ internal static class Runner
         connection.Close();
     }
 
-    private static string ChangeDatabaseName(
-        string connectionString,
-        string databaseName)
+    private static string ChangeDatabaseName(string connectionString, string databaseName)
     {
         var csb = new SqlConnectionStringBuilder(connectionString)
         {
@@ -46,20 +45,17 @@ internal static class Runner
 
     private static string GetDatabaseName(string connectionString)
     {
-        return new SqlConnectionStringBuilder(connectionString)
-            .InitialCatalog;
+        return new SqlConnectionStringBuilder(connectionString).InitialCatalog;
     }
 
-    private static IMigrationRunner CreateRunner(
-        string connectionString,
-        MigrationSettings options)
+    private static IMigrationRunner CreateRunner(string connectionString, MigrationSettings options)
     {
         var container = new ServiceCollection()
             .AddFluentMigratorCore()
             .ConfigureRunner(_ => _
                 .AddSqlServer()
                 .WithGlobalConnectionString(connectionString)
-                .ScanIn(typeof(Runner).Assembly).For.All())
+                .ScanIn(typeof(Program).Assembly).For.All())
             .AddSingleton<MigrationSettings>(options)
             .AddLogging(_ => _.AddFluentMigratorConsole())
             .BuildServiceProvider();
@@ -70,15 +66,13 @@ internal static class Runner
     {
         var configurations = new ConfigurationBuilder()
             .SetBasePath(baseDir)
-            .AddJsonFile("appSettings.json", optional: true,
-            reloadOnChange: true)
+            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables()
             .AddCommandLine(args)
             .Build();
 
         var settings = new MigrationSettings();
-        settings.ConnectionString = configurations.GetValue<string>
-            ("ConnectionString");
+        settings.ConnectionString = configurations.GetValue<string>("dbConnectionString");
         return settings;
     }
 

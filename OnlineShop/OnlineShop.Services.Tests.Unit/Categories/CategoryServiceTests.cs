@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Entities.Category;
 using OnlineShop.Infrastructure;
 using OnlineShop.Persistence.EF;
@@ -32,12 +33,14 @@ namespace OnlineShop.Services.Tests.Unit.Categories
         public async Task Add_add_Categories_properly()
         {
             _dto = CreateCategoryFactory
-                .CreateAddCategoryDto("Dummy");
+                .CreateAddCategoryDto(null, "Dummy");
 
             await _sut.Add(_dto);
 
-            _context.Categories.Should()
-                .Contain(_ => _.Name == _dto.Name);
+            var actual = await _context.ProductCategories.ToListAsync();
+            actual.Should().HaveCount(1);
+            actual.First().Name.Should().Be(_dto.Name);
+            actual.First().ParentId.Should().Be(null);
         }
     }
 }

@@ -16,25 +16,22 @@ public class CategoryAppService : CategoryService
         _repository = repository;
     }
 
-    public async Task Add(AddCategoryDto dto)
+    public async Task<int> Add(AddCategoryDto dto)
     {
         var name = await _repository.IsExistName(dto.Name);
         if (name)
         {
             throw new TheNameIsExistException();
         }
-        var nameChecked = await _repository.IsNameNotFound(dto.Name);
-        if (nameChecked == null)
-        {
-            throw new TheNameCanNotBeNullException();
-        }
 
         var category = new Category()
         {
             Name = dto.Name,
+            ParentId = dto.ParentId
         };
 
         _repository.Add(category);
         await _unitOfWork.Complete();
+        return category.Id;
     }
 }
