@@ -7,6 +7,7 @@ using OnlineShop.Persistence.EF.Categories;
 using OnlineShop.Services.CategoryServices;
 using OnlineShop.Services.CategoryServices.Contracts;
 using OnlineShop.Services.CategoryServices.Contracts.Dto;
+using OnlineShop.Services.CategoryServices.Exceptions;
 using OnlineShop.TestTools.Categories;
 using Xunit;
 
@@ -41,6 +42,19 @@ namespace OnlineShop.Services.Tests.Unit.Categories
             actual.Should().HaveCount(1);
             actual.First().Name.Should().Be(_dto.Name);
             actual.First().ParentId.Should().Be(null);
+        }
+
+        [Fact]
+        public async Task Add_add_exception_When_Name_is_duplicated_properly()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _dto = CreateCategoryFactory
+                .CreateAddCategoryDto(null, "Dummy");
+
+            var expected = () => _sut.Add(_dto);
+
+            await expected.Should().ThrowExactlyAsync<TheNameIsExistException>();
         }
     }
 }

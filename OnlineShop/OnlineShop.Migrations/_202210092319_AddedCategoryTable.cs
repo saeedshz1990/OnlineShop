@@ -10,7 +10,7 @@ namespace OnlineShop.Migrations
             Create.Table("ProductCategories")
                 .WithColumn("Id").AsInt32().Identity().PrimaryKey().NotNullable()
                 .WithColumn("Name").AsString(100).NotNullable()
-                .WithColumn("ParentId").AsInt32().NotNullable()
+                .WithColumn("ParentId").AsInt32().Nullable()
                 .ForeignKey("FK_ProductCategories_ProductCategories",
                 "ProductCategories",
                 "Id");
