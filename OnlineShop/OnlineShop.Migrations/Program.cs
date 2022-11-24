@@ -17,6 +17,7 @@ internal class Program
 
         var runner = CreateRunner(connectionString, options);
 
+        //runner.MigrateDown(0);
         runner.MigrateUp();
     }
 

@@ -21,6 +21,8 @@ namespace OnlineShop.Services.Tests.Unit.Categories
         private readonly CategoryService _sut;
         private AddCategoryDto _dto;
         private Category _category;
+        private Category _parentCategory;
+        private UpdateCategoryDto _update;
 
         public CategoryServiceTests()
         {
@@ -54,7 +56,80 @@ namespace OnlineShop.Services.Tests.Unit.Categories
 
             var expected = () => _sut.Add(_dto);
 
-            await expected.Should().ThrowExactlyAsync<TheNameIsExistException>();
+            await expected.Should().ThrowExactlyAsync<
+                TheCategoryNameIsExistException>();
+        }
+
+        [Fact]
+        public async Task Update_update_category_properly()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _update = CreateCategoryFactory
+                .UpdateCategoryDto(null, "UpdatedDummy");
+
+            await _sut.Update(_category.Id, _update);
+
+            var actual = await _context.ProductCategories.ToListAsync();
+            actual.Should().HaveCount(1);
+            actual.First().Name.Should().Be(_update.Name);
+            actual.First().ParentId.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Update_update_category_to_parent_properly()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _parentCategory = CreateCategoryFactory.CreateCategoryDto("NewDummy");
+            _context.Manipulate(_ => _.ProductCategories.Add(_parentCategory));
+            _update = new UpdateCategoryDto
+            {
+                Name = "UpdatedDummy",
+                ParentId = null
+            };
+
+            await _sut.Update(_category.Id, _update);
+
+            var actual = await _context.ProductCategories.ToListAsync();
+            actual.First().Name.Should().Be(_update.Name);
+            actual.First().ParentId.Should().Be(_update.ParentId);
+        }
+
+        [Fact]
+        public async Task Update_throw_exception_when_name_is_exist_properly()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _update = new UpdateCategoryDto
+            {
+                Name = "Dummy",
+                ParentId = null
+            };
+
+            var actualResult = () => _sut.Update(_category.Id, _update);
+
+            await actualResult.Should().ThrowExactlyAsync<
+                 TheCategoryNameIsExistException>();
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        public async Task Update_throw_exception_when_category_id_not_found_properly(
+            int invalidId)
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _update = new UpdateCategoryDto
+            {
+                Name = "Dummy",
+                ParentId = null
+            };
+
+            var actualResult = () => _sut.Update(invalidId, _update);
+
+            await actualResult.Should().ThrowExactlyAsync<
+                 ThisCategoryNotFoundException>();
         }
     }
 }

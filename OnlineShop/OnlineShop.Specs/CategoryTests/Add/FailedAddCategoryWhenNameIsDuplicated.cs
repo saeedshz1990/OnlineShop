@@ -60,7 +60,7 @@ namespace OnlineShop.Specs.CategoryTests.Add
             "در فهرست دسته بندی کالا باید وجود داشته باشد")]
         private async Task Then()
         {
-            await _expected.Should().ThrowExactlyAsync<TheNameIsExistException>();
+            await _expected.Should().ThrowExactlyAsync<TheCategoryNameIsExistException>();
 
             var actual = await _context.ProductCategories.ToListAsync();
             actual.Should().Contain(_ => _.Name == _dto.Name);

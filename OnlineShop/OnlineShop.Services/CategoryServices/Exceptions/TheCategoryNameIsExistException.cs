@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Services.CategoryServices.Exceptions
 {
-    public class TheNameIsExistException :BusinessException
+    public class TheCategoryNameIsExistException :BusinessException
     {
     }
 }

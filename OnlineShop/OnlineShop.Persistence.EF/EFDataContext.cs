@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OnlineShop.Entities.Category;
 using OnlineShop.Persistence.EF.Categories;
 
@@ -14,11 +13,9 @@ namespace OnlineShop.Persistence.EF
         }
 
         public EFDataContext(string connectionString) :
-                   this(new DbContextOptionsBuilder()
-                       .UseSqlServer(connectionString)
-                       .Options)
-        {
-        }
+           this(new DbContextOptionsBuilder()
+               .UseSqlServer(connectionString).Options)
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

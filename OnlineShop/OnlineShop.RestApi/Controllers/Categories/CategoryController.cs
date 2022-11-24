@@ -21,4 +21,10 @@ public class CategoryController : ControllerBase
         return await _service.Add(dto);
     }
 
+    [HttpPut("{id}")]
+    public async Task Update(int id, UpdateCategoryDto dto)
+    {
+        await _service.Update(id, dto);
+    }
+
 }

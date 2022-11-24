@@ -16,16 +16,33 @@ namespace OnlineShop.Persistence.EF.Categories
             _categories.Add(category);
         }
 
+        public async Task<Category?> Find(int id)
+        {
+            return await _categories.FindAsync(id);
+        }
+
+        public async Task<bool> IsExist(int id, int? parentId, string name)
+        {
+            var a= await _categories
+                .AnyAsync(_ => _.Id == id &&
+                _.ParentId == parentId &&_.Name == name);
+            return a;
+        }
+
         public Task<bool> IsExistName(string name)
         {
             return _categories.AnyAsync(c => c.Name == name);
         }
 
-        public async Task<Category> IsNameNotFound(string name)
+        public async Task<Category?> IsNameNotFound(string name)
         {
-            var category = await _categories
+            return await _categories
                 .FirstOrDefaultAsync(_ => _.Name == name);
-            return category;
+        }
+
+        public void Update(Category category)
+        {
+            
         }
     }
 }

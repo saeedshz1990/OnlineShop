@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace OnlineShop.Migrations
+namespace OnlineShop.Migrations.Migrations
 {
     [Migration(202210092319)]
     public class _202210092319_AddedCategoryTable : Migration

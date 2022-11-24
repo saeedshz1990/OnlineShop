@@ -23,5 +23,16 @@ namespace OnlineShop.TestTools.Categories
                 ParentId = parentId
             };
         }
+
+        public static UpdateCategoryDto UpdateCategoryDto(
+            int? parentId = null,
+            string name = "UpdatedDummy")
+        {
+            return new UpdateCategoryDto
+            {
+                Name = name,
+                ParentId = parentId
+            };
+        }
     }
 }
