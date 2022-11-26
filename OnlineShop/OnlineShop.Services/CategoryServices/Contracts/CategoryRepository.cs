@@ -11,5 +11,6 @@ public interface CategoryRepository : Repository
     Task<bool> IsExistName(string name);
     Task<Category?> IsNameNotFound(string name);
     void Update(Category category);
+    void Delete(Category category);
 
 }

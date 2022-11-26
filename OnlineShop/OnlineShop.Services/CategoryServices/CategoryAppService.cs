@@ -49,16 +49,23 @@ public class CategoryAppService : CategoryService
         await _unitOfWork.Complete();
     }
 
-    private async Task StopIfCategoryNameIsExist(int id, UpdateCategoryDto dto, Category? category)
+    private async Task StopIfCategoryNameIsExist(
+        int id,
+        UpdateCategoryDto dto,
+        Category? category)
     {
         if (await _repository.IsExist(id, category.ParentId, dto.Name))
+        {
             throw new TheCategoryNameIsExistException();
+        }
     }
 
     private static void StopIfCategoryNotFound(Category? category)
     {
         if (category == null)
+        {
             throw new ThisCategoryNotFoundException();
+        }
     }
 
     private static void StopIfCategoryNameIsExist(bool name)
@@ -67,5 +74,17 @@ public class CategoryAppService : CategoryService
         {
             throw new TheCategoryNameIsExistException();
         }
+    }
+
+    public async Task Delete(int id)
+    {
+        var category = await _repository.Find(id);
+        if (category == null)
+        {
+            throw new ThisCategoryNotFoundException();
+        }
+
+        _repository.Delete(category!);
+       await _unitOfWork.Complete();
     }
 }

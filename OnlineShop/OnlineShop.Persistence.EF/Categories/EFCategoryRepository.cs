@@ -16,6 +16,11 @@ namespace OnlineShop.Persistence.EF.Categories
             _categories.Add(category);
         }
 
+        public void Delete(Category category)
+        {
+            _categories.Remove(category);
+        }
+
         public async Task<Category?> Find(int id)
         {
             return await _categories.FindAsync(id);

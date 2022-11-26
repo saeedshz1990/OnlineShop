@@ -6,6 +6,6 @@ namespace OnlineShop.Services.CategoryServices.Contracts;
 public interface CategoryService : Service
 {
     Task<int> Add(AddCategoryDto dto);
-
     Task Update(int id,UpdateCategoryDto dto);
+    Task Delete(int id);
 }

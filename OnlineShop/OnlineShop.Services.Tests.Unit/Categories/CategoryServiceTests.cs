@@ -22,6 +22,9 @@ namespace OnlineShop.Services.Tests.Unit.Categories
         private AddCategoryDto _dto;
         private Category _category;
         private Category _parentCategory;
+        private Category _secondCategory;
+        private Category _childCategory;
+        private Category _thirdCategory;
         private UpdateCategoryDto _update;
 
         public CategoryServiceTests()
@@ -130,6 +133,108 @@ namespace OnlineShop.Services.Tests.Unit.Categories
 
             await actualResult.Should().ThrowExactlyAsync<
                  ThisCategoryNotFoundException>();
+        }
+
+        [Fact]
+        public async Task Delete_delete_Parent_category_properly()
+        {
+            _category = new Category
+            {
+                Name = "تجهیزات برقی",
+                ParentId = null
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _secondCategory = new Category
+            {
+                Name = "آموزشی",
+                ParentId = null
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_secondCategory));
+
+            await _sut.Delete(_category.Id);
+
+            var actualResult = await _context.ProductCategories
+                .ToListAsync();
+            actualResult.First().Name.Should().Be(_secondCategory.Name);
+            actualResult.First().ParentId.Should().Be(_secondCategory.ParentId);
+        }
+
+        [Fact]
+        public async Task Delete_delete_Category_when_is_Child_properly()
+        {
+            _category = new Category
+            {
+                Name = "تجهیزات برقی",
+                ParentId = null
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _childCategory = new Category
+            {
+                ParentId = _category.Id,
+                Name = "جاروبرقی"
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_childCategory));
+            _secondCategory = new Category
+            {
+                Name = "آموزشی",
+                ParentId = null
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_secondCategory));
+
+            await _sut.Delete(_category.Id);
+
+            var actualResult = await _context.ProductCategories
+               .SingleOrDefaultAsync();
+            actualResult.Name.Should().Be(_secondCategory.Name);
+            actualResult.ParentId.Should().Be(_secondCategory.ParentId);
+        }
+
+        [Fact]
+        public async Task Delete_delete_Child_category_In_parent_properly()
+        {
+            _category = new Category
+            {
+                Name = "تجهیزات برقی",
+                ParentId = null
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_category));
+            _childCategory = new Category
+            {
+                ParentId = _category.Id,
+                Name = "جاروبرقی"
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_childCategory));
+            _thirdCategory = new Category
+            {
+                ParentId = _category.Id,
+                Name = "یخچال و فریزر"
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_thirdCategory));
+            _secondCategory = new Category
+            {
+                Name = "آموزشی",
+                ParentId = null
+            };
+            _context.Manipulate(_ => _.ProductCategories.Add(_secondCategory));
+
+            await _sut.Delete(_childCategory.Id);
+
+            var actualResult = await _context.ProductCategories
+             .SingleOrDefaultAsync();
+            actualResult!.Name.Should().Be(_thirdCategory.Name);
+            actualResult.ParentId.Should().Be(_thirdCategory.ParentId);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        public async Task 
+            Delete_throw_exception_when_category_id_not_found_properly(
+            int invalidId)
+        {
+            var actualResult = () => _sut.Delete(invalidId);
+
+           await actualResult.Should().ThrowExactlyAsync<
+                ThisCategoryNotFoundException>();
         }
     }
 }
