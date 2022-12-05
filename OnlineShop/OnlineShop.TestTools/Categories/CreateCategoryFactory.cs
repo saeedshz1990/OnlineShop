@@ -5,9 +5,9 @@ namespace OnlineShop.TestTools.Categories
 {
     public static class CreateCategoryFactory
     {
-        public static Category CreateCategoryDto(string name = "dummy")
+        public static ProductCategories CreateCategoryDto(string name = "dummy")
         {
-            return new Category
+            return new ProductCategories
             {
                 Name = name,
             };

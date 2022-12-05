@@ -6,7 +6,7 @@ namespace OnlineShop.Persistence.EF
 {
     public class EFDataContext : DbContext
     {
-        public DbSet<Category> ProductCategories { get; set; }
+        public DbSet<ProductCategories> ProductCategories { get; set; }
 
         public EFDataContext(DbContextOptions options) : base(options)
         {

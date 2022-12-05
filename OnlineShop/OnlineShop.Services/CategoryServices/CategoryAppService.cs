@@ -10,6 +10,7 @@ public class CategoryAppService : CategoryService
 {
     private readonly UnitOfWork _unitOfWork;
     private readonly CategoryRepository _repository;
+
     public CategoryAppService(
         UnitOfWork unitOfWork,
         CategoryRepository repository)
@@ -23,7 +24,7 @@ public class CategoryAppService : CategoryService
         var name = await _repository.IsExistName(dto.Name);
         StopIfCategoryNameIsExist(name);
 
-        var category = new Category()
+        var category = new ProductCategories()
         {
             Name = dto.Name,
             ParentId = dto.ParentId
@@ -49,10 +50,34 @@ public class CategoryAppService : CategoryService
         await _unitOfWork.Complete();
     }
 
+    public async Task Delete(int id)
+    {
+        var category = await _repository.Find(id);
+        if (category == null)
+        {
+            throw new ThisCategoryNotFoundException();
+        }
+
+        _repository.Delete(category!);
+        await _unitOfWork.Complete();
+    }
+
+    public async Task<List<GetAllCategoriesDto>> GetAll()
+    {
+        return await _repository.GetAll();
+    }
+
+    public async Task<List<GetCategoryWithChildDto>> GetById(int categoryId)
+    {
+        return await _repository.GetById(categoryId);
+    }
+
+
+
     private async Task StopIfCategoryNameIsExist(
         int id,
         UpdateCategoryDto dto,
-        Category? category)
+        ProductCategories? category)
     {
         if (await _repository.IsExist(id, category.ParentId, dto.Name))
         {
@@ -60,7 +85,7 @@ public class CategoryAppService : CategoryService
         }
     }
 
-    private static void StopIfCategoryNotFound(Category? category)
+    private static void StopIfCategoryNotFound(ProductCategories? category)
     {
         if (category == null)
         {
@@ -74,17 +99,5 @@ public class CategoryAppService : CategoryService
         {
             throw new TheCategoryNameIsExistException();
         }
-    }
-
-    public async Task Delete(int id)
-    {
-        var category = await _repository.Find(id);
-        if (category == null)
-        {
-            throw new ThisCategoryNotFoundException();
-        }
-
-        _repository.Delete(category!);
-       await _unitOfWork.Complete();
     }
 }

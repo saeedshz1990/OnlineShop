@@ -5,9 +5,9 @@ using OnlineShop.Entities.Category;
 namespace OnlineShop.Persistence.EF.Categories
 {
     public class CategoryEntityMap :
-        IEntityTypeConfiguration<Category>
+        IEntityTypeConfiguration<ProductCategories>
     {
-        public void Configure(EntityTypeBuilder<Category> _)
+        public void Configure(EntityTypeBuilder<ProductCategories> _)
         {
             _.ToTable("ProductCategories");
             _.HasKey(_ => _.Id);

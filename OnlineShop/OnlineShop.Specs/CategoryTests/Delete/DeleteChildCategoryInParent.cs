@@ -18,10 +18,10 @@ namespace OnlineShop.Specs.CategoryTests.Delete
         private readonly CategoryRepository _repository;
         private readonly UnitOfWork _unitOfWork;
         private readonly CategoryService _sut;
-        private Category _category;
-        private Category _childCategory;
-        private Category _thirdCategory;
-        private Category _secondCategory;
+        private ProductCategories _category;
+        private ProductCategories _childCategory;
+        private ProductCategories _thirdCategory;
+        private ProductCategories _secondCategory;
 
         public DeleteChildCategoryInParent(
             ConfigurationFixture configuration) 
@@ -36,25 +36,25 @@ namespace OnlineShop.Specs.CategoryTests.Delete
            "برقی در فهرست دسته بندی موجود می باشد")]
         public async Task Given()
         {
-            _category = new Category
+            _category = new ProductCategories
             {
                 Name = "تجهیزات برقی",
                 ParentId = null
             };
             _context.Manipulate(_ => _.ProductCategories.Add(_category));
-            _childCategory = new Category
+            _childCategory = new ProductCategories
             {
                 ParentId = _category.Id,
                 Name = "جاروبرقی"
             };
             _context.Manipulate(_ => _.ProductCategories.Add(_childCategory));
-            _thirdCategory = new Category
+            _thirdCategory = new ProductCategories
             {
                 ParentId = _category.Id,
                 Name = "یخچال و فریزر"
             };
             _context.Manipulate(_ => _.ProductCategories.Add(_thirdCategory));
-            _secondCategory = new Category
+            _secondCategory = new ProductCategories
             {
                 Name = "آموزشی",
                 ParentId = null

@@ -20,9 +20,9 @@ namespace OnlineShop.Specs.CategoryTests.Update
         private readonly UnitOfWork _unitOfWork;
         private readonly CategoryRepository _categoryRepository;
         private UpdateCategoryDto? _dto;
-        private Category? _category;
-        private Category? _parentCategory;
-        private Category? _newParentCategory;
+        private ProductCategories? _category;
+        private ProductCategories? _parentCategory;
+        private ProductCategories? _newParentCategory;
         public UpdateCategories(ConfigurationFixture configuration)
             : base(configuration)
         {
@@ -38,17 +38,17 @@ namespace OnlineShop.Specs.CategoryTests.Update
             "در فهرست دسته بندی ها وجود دارد")]
         public async Task Given()
         {
-            _parentCategory = new Category
+            _parentCategory = new ProductCategories
             {
                 Name = "برقی"
             };
-            _category = new Category
+            _category = new ProductCategories
             {
                 Name = "لوازم خانگی",
                 Parent = _parentCategory
             };
             _context.Manipulate(_ => _.ProductCategories.Add(_category));
-            _newParentCategory = new Category
+            _newParentCategory = new ProductCategories
             {
                 Name = "تلفن همراه"
             };

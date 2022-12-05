@@ -22,7 +22,7 @@ namespace OnlineShop.Specs.CategoryTests.Add
         private readonly UnitOfWork _unitOfWork;
         private readonly CategoryService _sut;
         private AddCategoryDto _dto;
-        private Category _category;
+        private ProductCategories _category;
         Func<Task> _expected;
 
         public FailedAddCategoryWhenNameIsDuplicated(
@@ -38,7 +38,7 @@ namespace OnlineShop.Specs.CategoryTests.Add
         [Given("دسته بندی با عنوان ‘برقی’ در لیست دسته بندی ها موجود می باشد")]
         private void Given()
         {
-            _category = new Category()
+            _category = new ProductCategories()
             {
                 Name = "برقی"
             };
